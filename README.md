@@ -10,23 +10,28 @@
 
 Thus, when it comes to big files, callbacks will be executed meanwhile file is downloading and will be much more efficient as far as memory is concerned.
 
-### Usage examples
+## Installation
+```
+composer require rodenastyle/stream-parser
+```
 
-#### XML
+## Usage examples
+
+### XML
 ```php
 StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
 });
 ```
 
-#### JSON
+### JSON
 ```php
 StreamParser::json("https://example.com/users.json")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
 });
 ```
 
-#### CSV
+### CSV
 ```php
 StreamParser::csv("https://example.com/users.csv")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
