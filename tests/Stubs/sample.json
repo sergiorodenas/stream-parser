@@ -1,0 +1,36 @@
+[
+  {
+    "title": "The Iliad and The Odyssey",
+    "price": 12.95,
+    "comments": [
+      {"comment": "Best translation I've read."},
+      {"comment": "I like other versions better."}
+    ]
+  },
+  {
+    "title": "Anthology of World Literature",
+    "price": 24.95,
+    "comments": [
+      {"comment": "Needs more modern literature."},
+      {"comment": "Excellent overview of world literature."}
+    ]
+  },
+  {
+    "title": "Computer Dictionary",
+    "price": 24.95,
+    "comments": [
+      {"comment": "A valuable resource."}
+    ]
+  },
+  {
+    "title": "Cooking on a Budget",
+    "price": 23.95,
+    "comments": [
+      {"comment": "Delicious!"}
+    ]
+  },
+  {
+    "title": "Great Works of Art",
+    "price": 29.95
+  }
+]
