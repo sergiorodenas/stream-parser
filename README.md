@@ -1,4 +1,9 @@
-# ⚡ Laravel Multi-format Streaming Parser
+# ⚡ PHP7 / Laravel Multi-format Streaming Parser
+
+[![Build Status](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/build-status/master)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/rodenastyle/stream-parser.svg?style=flat-square)](https://packagist.org/packages/rodenastyle/stream-parser)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
 
 > When it comes to parsing XML/CSV/JSON/... documents, there are 2 approaches to consider:
 >
@@ -15,25 +20,121 @@ Thus, when it comes to big files, callbacks will be executed meanwhile file is d
 composer require rodenastyle/stream-parser
 ```
 
-## Usage examples
+## Recommended usage
+Delegate as possible the callback execution so it doesn't blocks the document reading: 
 
-### XML
+(Laravel Queue based example)
 ```php
 StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
 });
 ```
 
-### JSON
+## Practical Input/Code/Output demos
+
+### XML
+```xml
+<bookstore>
+    <book ISBN="10-000000-001">
+        <title>The Iliad and The Odyssey</title>
+        <price>12.95</price>
+        <comments>
+            <userComment rating="4">
+                Best translation I've read.
+            </userComment>
+            <userComment rating="2">
+                I like other versions better.
+            </userComment>
+        </comments>
+    </book>
+    [...]
+</bookstore>
+```
 ```php
-StreamParser::json("https://example.com/users.json")->each(function(Collection $user){
-    dispatch(new App\Jobs\SendEmail($user));
+StreamParser::xml("https://example.com/books.xml")->each(function(Collection $book){
+    var_dump($book);
+    var_dump($book->get('comments')->toArray());
 });
 ```
+```
+class Illuminate\Support\Collection#19 (1) {
+  protected $items =>
+  array(4) {
+    'ISBN' =>
+    string(13) "10-000000-001"
+    'title' =>
+    string(25) "The Iliad and The Odyssey"
+    'price' =>
+    string(5) "12.95"
+    'comments' =>
+    class Illuminate\Support\Collection#17 (1) {
+      protected $items =>
+      array(2) {
+        ...
+      }
+    }
+  }
+}
+array(2) {
+  [0] =>
+  array(2) {
+    'rating' =>
+    string(1) "4"
+    'userComment' =>
+    string(27) "Best translation I've read."
+  }
+  [1] =>
+  array(2) {
+    'rating' =>
+    string(1) "2"
+    'userComment' =>
+    string(29) "I like other versions better."
+  }
+}
+```
 
-### CSV
+### JSON
+```json
+[
+  {
+    "title": "The Iliad and The Odyssey",
+    "price": 12.95,
+    "comments": [
+      {"comment": "Best translation I've read."},
+      {"comment": "I like other versions better."}
+    ]
+  },
+  {
+    "title": "Anthology of World Literature",
+    "price": 24.95,
+    "comments": [
+      {"comment": "Needs more modern literature."},
+      {"comment": "Excellent overview of world literature."}
+    ]
+  }
+]
+```
 ```php
-StreamParser::csv("https://example.com/users.csv")->each(function(Collection $user){
-    dispatch(new App\Jobs\SendEmail($user));
+StreamParser::json("https://example.com/books.json")->each(function(Collection $book){
+    var_dump($book->get('comments')->count());
 });
+```
+```
+int(2)
+int(2)
+```
+### CSV
+```csv
+title,price,comments
+The Iliad and The Odyssey,12.95,"Best translation I've read.,I like other versions better."
+Anthology of World Literature,24.95,"Needs more modern literature.,Excellent overview of world literature."
+```
+```php
+StreamParser::csv("https://example.com/books.csv")->each(function(Collection $book){
+    var_dump($book->get('comments')->last());
+});
+```
+```
+string(29) "I like other versions better."
+string(39) "Excellent overview of world literature."
 ```
