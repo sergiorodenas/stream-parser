@@ -88,7 +88,13 @@ class CSVParser implements StreamParserInterface
 					$value = explode($delimiter, $value);
 				}
 			});
-			return $value;
+			if(is_array($value)){
+				return collect($value)->reject(function($value){
+					return empty($value);
+				});
+			} else {
+				return $value;
+			}
 		});
 	}
 }
