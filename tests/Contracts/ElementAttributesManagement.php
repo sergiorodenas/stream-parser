@@ -11,5 +11,9 @@ namespace Rodenastyle\StreamParser\Test\Contracts;
 
 interface ElementAttributesManagement
 {
+	/**
+	 *  It adds elements attributes as values
+	 */
+
 	public function test_element_attributes_are_in_the_values();
 }

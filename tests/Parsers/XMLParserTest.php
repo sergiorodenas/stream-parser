@@ -11,9 +11,10 @@ namespace Rodenastyle\StreamParser\Test\Parsers;
 use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\StreamParser;
 use Rodenastyle\StreamParser\Test\Contracts\ElementAttributesManagement;
+use Rodenastyle\StreamParser\Test\Contracts\ElementListManagement;
 use Rodenastyle\StreamParser\Test\TestCase;
 
-class XMLParserTest extends TestCase implements ElementAttributesManagement {
+class XMLParserTest extends TestCase implements ElementAttributesManagement, ElementListManagement {
 
 	private $stub = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Stubs".DIRECTORY_SEPARATOR."sample.xml";
 
@@ -72,5 +73,19 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement {
 		StreamParser::xml($this->stub)->each(function($book) use ($ISBNList){
 			$this->assertContains($book->get('ISBN'), $ISBNList);
 		});
+	}
+
+	public function test_elements_lists_are_managed()
+	{
+		$totalComments = 6;
+		$countedComments = 0;
+
+		StreamParser::xml($this->stub)->each(function($book) use (&$countedComments){
+			if($book->has('comments')){
+				$countedComments += $book->get('comments')->count();
+			}
+		});
+
+		$this->assertEquals($totalComments, $countedComments);
 	}
 }

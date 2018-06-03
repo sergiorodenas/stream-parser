@@ -28,6 +28,12 @@ class XMLParser implements StreamParserInterface
 		return $this;
 	}
 
+	public function withoutSkippingFirstElement(){
+		$this->skipFirstElement = false;
+
+		return $this;
+	}
+
 	public function each(callable $function)
 	{
 		$this->start();
@@ -37,10 +43,6 @@ class XMLParser implements StreamParserInterface
 		$this->stop();
 	}
 
-	public function withoutSkippingFirstElement(){
-		$this->skipFirstElement = false;
-	}
-
 	private function searchElement(callable $function)
 	{
 		if($this->isElement() && ! $this->shouldBeSkipped()){
@@ -48,7 +50,7 @@ class XMLParser implements StreamParserInterface
 		}
 	}
 
-	private function extractElement(String $elementName)
+	private function extractElement(String $elementName, $couldBeAnElementsList = false)
 	{
 		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
 
@@ -56,12 +58,21 @@ class XMLParser implements StreamParserInterface
 			if($this->isEndElement($elementName)){
 				break;
 			}
-			if($this->isElement()){
-				$foundElementName = $this->reader->name;
-				$elementCollection->put($foundElementName, $this->extractElement($foundElementName));
-			}
 			if($this->isValue()){
-				$elementCollection = $this->reader->value;
+				if($elementCollection->isEmpty()){
+					return trim($this->reader->value);
+				} else {
+					return $elementCollection->put($elementName, trim($this->reader->value));
+				}
+			}
+			if($this->isElement()){
+				if($couldBeAnElementsList){
+					$foundElementName = $this->reader->name;
+					$elementCollection->push(collect($this->extractElement($foundElementName)));
+				} else {
+					$foundElementName = $this->reader->name;
+					$elementCollection->put($foundElementName, $this->extractElement($foundElementName, true));
+				}
 			}
 		}
 
@@ -119,6 +130,6 @@ class XMLParser implements StreamParserInterface
 	}
 
 	private function isValue(){
-		return $this->reader->nodeType == XMLReader::CDATA || $this->reader->nodeType == XMLReader::TEXT;
+		return $this->reader->nodeType == XMLReader::TEXT;
 	}
 }
