@@ -1,7 +1,7 @@
 {
   "name": "rodenastyle/stream-parser",
   "description": "PHP Multiformat Streaming Parser",
-  "keywords": [ "laravel", "stream", "parser", "pull", "xml", "csv", "php", "json", "collections" ],
+  "keywords": ["php7", "laravel", "stream", "parser", "pull", "xml", "csv", "json"],
   "license": "MIT",
 
   "authors": [
@@ -20,7 +20,7 @@
 
   "require-dev": {
     "mockery/mockery": "^0.9.9",
-    "phpunit/phpunit": "^6.0|^7.0"
+    "phpunit/phpunit": "^6.0"
   },
 
   "autoload": {
