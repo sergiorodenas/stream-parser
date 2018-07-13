@@ -9,9 +9,9 @@
 namespace Rodenastyle\StreamParser\Parsers;
 
 
-use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
+use Tightenco\Collect\Support\Collection;
 
 class CSVParser implements StreamParserInterface
 {

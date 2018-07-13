@@ -10,7 +10,7 @@ namespace Rodenastyle\StreamParser\Test\Parsers;
 
 use PHPUnit\Framework\TestCase;
 use Rodenastyle\StreamParser\StreamParser;
-use Illuminate\Support\Collection;
+use Tightenco\Collect\Support\Collection;
 
 class CSVParserTest extends TestCase
 {
