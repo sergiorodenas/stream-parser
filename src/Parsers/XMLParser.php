@@ -11,8 +11,8 @@ namespace Rodenastyle\StreamParser\Parsers;
 
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
+use Tightenco\Collect\Support\Collection;
 use XMLReader;
-use Illuminate\Support\Collection;
 
 
 class XMLParser implements StreamParserInterface

@@ -11,7 +11,7 @@ namespace Rodenastyle\StreamParser\Parsers;
 
 use Rodenastyle\StreamParser\Services\JsonCollectionParser as Parser;
 use Rodenastyle\StreamParser\StreamParserInterface;
-use Illuminate\Support\Collection;
+use Tightenco\Collect\Support\Collection;
 
 class JSONParser implements StreamParserInterface
 {
