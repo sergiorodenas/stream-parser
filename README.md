@@ -4,6 +4,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rodenastyle/stream-parser.svg?style=flat-square)](https://packagist.org/packages/rodenastyle/stream-parser)
 [![Quality Score](https://img.shields.io/scrutinizer/g/rodenastyle/stream-parser.svg?style=flat-square)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
+[![License](https://img.shields.io/packagist/l/Rodenastyle/stream-parser.svg)](https://packagist.org/packages/Rodenastyle/stream-parser)
 
 > When it comes to parsing XML/CSV/JSON/... documents, there are 2 approaches to consider:
 >
@@ -138,3 +139,6 @@ StreamParser::csv("https://example.com/books.csv")->each(function(Collection $bo
 string(29) "I like other versions better."
 string(39) "Excellent overview of world literature."
 ```
+
+## License
+This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.
