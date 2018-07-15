@@ -40,7 +40,7 @@ class JSONParser implements StreamParserInterface
 	{
 		$this->start();
 		$this->reader->parse($this->source, function(array $item) use ($function){
-			$function(collect($item)->recursive());
+			$function((new Collection($item))->recursive());
 		});
 	}
 

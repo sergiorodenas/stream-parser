@@ -52,7 +52,7 @@ class CSVParser implements StreamParserInterface
 		$this->reader = fopen($this->source, 'r');
 
 		$this->read();
-		$this->headers = collect($this->currentLine);
+		$this->headers = new Collection($this->currentLine);
 
 		return $this;
 	}
@@ -64,7 +64,7 @@ class CSVParser implements StreamParserInterface
 	}
 
 	private function read(): bool{
-		$this->currentLine = collect(fgetcsv($this->reader))->filter();
+		$this->currentLine = (new Collection(fgetcsv($this->reader)))->filter();
 		return $this->currentLine->isNotEmpty();
 	}
 
@@ -83,13 +83,13 @@ class CSVParser implements StreamParserInterface
 
 	private function explodeCollectionValues(Collection $collection){
 		$collection->transform(function($value){
-			collect(static::$delimiters)->each(function($delimiter) use (&$value){
+			(new Collection(static::$delimiters))->each(function($delimiter) use (&$value){
 				if( ! is_array($value) && strpos($value, $delimiter) !== false){
 					$value = explode($delimiter, $value);
 				}
 			});
 			if(is_array($value)){
-				return collect($value)->reject(function($value){
+				return (new Collection($value))->reject(function($value){
 					return empty($value);
 				});
 			} else {

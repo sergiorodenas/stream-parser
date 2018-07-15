@@ -68,7 +68,7 @@ class XMLParser implements StreamParserInterface
 			if($this->isElement()){
 				if($couldBeAnElementsList){
 					$foundElementName = $this->reader->name;
-					$elementCollection->push(collect($this->extractElement($foundElementName)));
+					$elementCollection->push(new Collection($this->extractElement($foundElementName)));
 				} else {
 					$foundElementName = $this->reader->name;
 					$elementCollection->put($foundElementName, $this->extractElement($foundElementName, true));
