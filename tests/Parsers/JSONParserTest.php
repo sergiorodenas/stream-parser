@@ -9,6 +9,7 @@
 namespace Rodenastyle\StreamParser\Test\Parsers;
 
 use Rodenastyle\StreamParser\Test\TestCase;
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
 use Rodenastyle\StreamParser\StreamParser;
 use Tightenco\Collect\Support\Collection;
 
@@ -25,6 +26,31 @@ class JSONParserTest extends TestCase
 		});
 
 		$this->assertEquals(5, $count);
+	}
+
+	public function test_detects_stop_parse()
+	{
+		$count = 0;
+
+		StreamParser::json($this->stub)->each(function() use (&$count){
+			$count++;
+			if($count == 2) {
+				return false;
+			}
+		});
+
+		$this->assertEquals(2, $count);
+
+		$count = 0;
+
+		StreamParser::json($this->stub)->each(function() use (&$count){
+			$count++;
+			if($count == 2) {
+				throw new StopParseException();
+			}
+		});
+
+		$this->assertEquals(2, $count);
 	}
 
 	public function test_transforms_elements_to_collections()

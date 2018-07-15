@@ -10,6 +10,7 @@ namespace Rodenastyle\StreamParser\Parsers;
 
 
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
 use Tightenco\Collect\Support\Collection;
 use XMLReader;
@@ -37,16 +38,22 @@ class XMLParser implements StreamParserInterface
 	public function each(callable $function)
 	{
 		$this->start();
-		while($this->reader->read()){
-			$this->searchElement($function);
+		try {
+			while($this->reader->read()){
+				if($this->searchElement($function) === false) {
+					break;
+				}
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->stop();
 		}
-		$this->stop();
 	}
 
 	private function searchElement(callable $function)
 	{
 		if($this->isElement() && ! $this->shouldBeSkipped()){
-			$function($this->extractElement($this->reader->name));
+			return $function($this->extractElement($this->reader->name));
 		}
 	}
 
