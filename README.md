@@ -26,6 +26,8 @@ Delegate as possible the callback execution so it doesn't blocks the document re
 
 (Laravel Queue based example)
 ```php
+use Tightenco\Collect\Support\Collection;
+
 StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
 });
@@ -52,13 +54,15 @@ StreamParser::xml("https://example.com/users.xml")->each(function(Collection $us
 </bookstore>
 ```
 ```php
+use Tightenco\Collect\Support\Collection;
+
 StreamParser::xml("https://example.com/books.xml")->each(function(Collection $book){
     var_dump($book);
     var_dump($book->get('comments')->toArray());
 });
 ```
 ```
-class Illuminate\Support\Collection#19 (1) {
+class Tightenco\Collect\Support\Collection#19 (1) {
   protected $items =>
   array(4) {
     'ISBN' =>
@@ -68,7 +72,7 @@ class Illuminate\Support\Collection#19 (1) {
     'price' =>
     string(5) "12.95"
     'comments' =>
-    class Illuminate\Support\Collection#17 (1) {
+    class Tightenco\Collect\Support\Collection#17 (1) {
       protected $items =>
       array(2) {
         ...
@@ -116,6 +120,8 @@ array(2) {
 ]
 ```
 ```php
+use Tightenco\Collect\Support\Collection;
+
 StreamParser::json("https://example.com/books.json")->each(function(Collection $book){
     var_dump($book->get('comments')->count());
 });
@@ -131,6 +137,8 @@ The Iliad and The Odyssey,12.95,"Best translation I've read.,I like other versio
 Anthology of World Literature,24.95,"Needs more modern literature.,Excellent overview of world literature."
 ```
 ```php
+use Tightenco\Collect\Support\Collection;
+
 StreamParser::csv("https://example.com/books.csv")->each(function(Collection $book){
     var_dump($book->get('comments')->last());
 });
