@@ -130,6 +130,6 @@ class XMLParser implements StreamParserInterface
 	}
 
 	private function isValue(){
-		return $this->reader->nodeType == XMLReader::TEXT;
+		return $this->reader->nodeType == XMLReader::TEXT || $this->reader->nodeType === XMLReader::CDATA;
 	}
 }
