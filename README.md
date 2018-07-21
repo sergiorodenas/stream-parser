@@ -33,6 +33,42 @@ StreamParser::xml("https://example.com/users.xml")->each(function(Collection $us
 });
 ```
 
+It is also possible to parse in chunks:
+```php
+use Tightenco\Collect\Support\Collection;
+
+StreamParser::xml("https://example.com/users.xml")->chunk(20, function(Collection $users){
+    doSomething($users);
+});
+```
+
+Return `false` if want to stop the parser
+```php
+use Tightenco\Collect\Support\Collection;
+
+StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
+    if($something) {
+        return false;
+    }
+});
+```
+
+Or throw a `\Rodenastyle\StreamParser\Exceptions\StopParseException`
+```php
+use Tightenco\Collect\Support\Collection;
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
+
+function doSomething($user) {
+    if($something) {
+        throw new StopParseException();
+    }
+}
+
+StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
+    doSomething($user);
+});
+```
+
 ## Practical Input/Code/Output demos
 
 ### XML
