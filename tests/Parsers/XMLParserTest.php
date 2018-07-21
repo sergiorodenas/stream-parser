@@ -28,6 +28,19 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		});
 
 		$this->assertEquals(5, $count);
+
+		// chunk
+
+		$count = 0;
+		$countChunk = 0;
+
+		StreamParser::xml($this->stub)->chunk(2, function($books) use (&$count, &$countChunk){
+			$count += $books->count();
+			$countChunk++;
+		});
+
+		$this->assertEquals(5, $count);
+		$this->assertEquals(3, $countChunk);
 	}
 
 	public function test_detects_stop_parse()
@@ -53,12 +66,45 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		});
 
 		$this->assertEquals(2, $count);
+
+		// chunk
+
+		$count = 0;
+
+		StreamParser::xml($this->stub)->chunk(2, function() use (&$count){
+			$count++;
+			if($count == 2) {
+				return false;
+			}
+		});
+
+		$this->assertEquals(2, $count);
+
+		$count = 0;
+
+		StreamParser::xml($this->stub)->chunk(2, function() use (&$count){
+			$count++;
+			if($count == 2) {
+				throw new StopParseException();
+			}
+		});
+
+		$this->assertEquals(2, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
 	{
 		StreamParser::xml($this->stub)->each(function($book){
 			$this->assertInstanceOf(Collection::class, $book);
+		});
+
+		// chunk
+
+		StreamParser::xml($this->stub)->chunk(2, function($books){
+			$this->assertInstanceOf(Collection::class, $books);
+			foreach($books as $book) {
+				$this->assertInstanceOf(Collection::class, $book);
+			}
 		});
 	}
 
@@ -75,6 +121,14 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		StreamParser::xml($this->stub)->each(function($book) use ($titles){
 			$this->assertContains($book->get('title'), $titles);
 		});
+
+		// chunk
+
+		StreamParser::xml($this->stub)->chunk(2, function($books) use ($titles){
+			foreach($books as $book) {
+				$this->assertContains($book->get('title'), $titles);
+			}
+		});
 	}
 
 	public function test_also_transforms_element_childs_to_collections_recursively()
@@ -82,6 +136,16 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		StreamParser::xml($this->stub)->each(function($book){
 			if($book->has('comments')){
 				$this->assertInstanceOf(Collection::class, $book->get('comments'));
+			}
+		});
+
+		// chunk
+
+		StreamParser::xml($this->stub)->chunk(2, function($books){
+			foreach($books as $book) {
+				if($book->has('comments')){
+					$this->assertInstanceOf(Collection::class, $book->get('comments'));
+				}
 			}
 		});
 	}
@@ -99,6 +163,14 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		StreamParser::xml($this->stub)->each(function($book) use ($ISBNList){
 			$this->assertContains($book->get('ISBN'), $ISBNList);
 		});
+
+		// chunk
+
+		StreamParser::xml($this->stub)->chunk(2, function($books) use ($ISBNList){
+			foreach($books as $book) {
+				$this->assertContains($book->get('ISBN'), $ISBNList);
+			}
+		});
 	}
 
 	public function test_elements_lists_are_managed()
@@ -109,6 +181,20 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		StreamParser::xml($this->stub)->each(function($book) use (&$countedComments){
 			if($book->has('comments')){
 				$countedComments += $book->get('comments')->count();
+			}
+		});
+
+		$this->assertEquals($totalComments, $countedComments);
+
+		// chunk
+
+		$countedComments = 0;
+
+		StreamParser::xml($this->stub)->chunk(2, function($books) use (&$countedComments){
+			foreach($books as $book) {
+				if($book->has('comments')){
+					$countedComments += $book->get('comments')->count();
+				}
 			}
 		});
 

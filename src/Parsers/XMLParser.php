@@ -50,6 +50,41 @@ class XMLParser implements StreamParserInterface
 		}
 	}
 
+	public function chunk($count, callable $function)
+	{
+		if($count <= 0) {
+			return;
+		}
+
+		$this->start();
+		try {
+			$chunk = new Collection();
+
+			while($this->reader->read()){
+				$this->searchElement(function($item) use (&$chunk) {
+					$chunk->push($item);
+				});
+
+				if($chunk->count() >= $count) {
+					$stop = $function($chunk) === false;
+
+					$chunk = new Collection();
+
+					if($stop) {
+						break;
+					}
+				}
+			}
+
+			if($chunk->count() > 0) {
+				$function($chunk);
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->stop();
+		}
+	}
+
 	private function searchElement(callable $function)
 	{
 		if($this->isElement() && ! $this->shouldBeSkipped()){

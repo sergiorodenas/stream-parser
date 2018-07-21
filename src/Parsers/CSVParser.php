@@ -54,6 +54,39 @@ class CSVParser implements StreamParserInterface
 		}
 	}
 
+	public function chunk($count, callable $function)
+	{
+		if($count <= 0) {
+			return;
+		}
+
+		$this->start();
+		try {
+			$chunk = new Collection();
+
+			while($this->read()){
+				$chunk->push($this->getCurrentLineAsCollection());
+
+				if($chunk->count() >= $count) {
+					$stop = $function($chunk) === false;
+
+					$chunk = new Collection();
+
+					if($stop) {
+						break;
+					}
+				}
+			}
+
+			if($chunk->count() > 0) {
+				$function($chunk);
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->close();
+		}
+	}
+
 	private function start()
 	{
 		$this->reader = fopen($this->source, 'r');

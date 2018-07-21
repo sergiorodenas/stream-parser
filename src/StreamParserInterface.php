@@ -13,4 +13,5 @@ interface StreamParserInterface
 {
 	public function from(String $source): StreamParserInterface;
 	public function each(callable $function);
+	public function chunk($count, callable $function);
 }

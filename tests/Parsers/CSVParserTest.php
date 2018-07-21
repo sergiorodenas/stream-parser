@@ -26,6 +26,19 @@ class CSVParserTest extends TestCase
 		});
 
 		$this->assertEquals(5, $count);
+
+		// chunk
+
+		$count = 0;
+		$countChunk = 0;
+
+		StreamParser::csv($this->stub)->chunk(2, function($books) use (&$count, &$countChunk){
+			$count += $books->count();
+			$countChunk++;
+		});
+
+		$this->assertEquals(5, $count);
+		$this->assertEquals(3, $countChunk);
 	}
 
 	public function test_detects_stop_parse()
@@ -51,12 +64,45 @@ class CSVParserTest extends TestCase
 		});
 
 		$this->assertEquals(2, $count);
+
+		// chunk
+
+		$count = 0;
+
+		StreamParser::csv($this->stub)->chunk(2, function() use (&$count){
+			$count++;
+			if($count == 2) {
+				return false;
+			}
+		});
+
+		$this->assertEquals(2, $count);
+
+		$count = 0;
+
+		StreamParser::csv($this->stub)->chunk(2, function() use (&$count){
+			$count++;
+			if($count == 2) {
+				throw new StopParseException();
+			}
+		});
+
+		$this->assertEquals(2, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
 	{
 		StreamParser::csv($this->stub)->each(function($book){
 			$this->assertInstanceOf(Collection::class, $book);
+		});
+
+		// chunk
+
+		StreamParser::csv($this->stub)->chunk(2, function($books){
+			$this->assertInstanceOf(Collection::class, $books);
+			foreach($books as $book) {
+				$this->assertInstanceOf(Collection::class, $book);
+			}
 		});
 	}
 
@@ -73,6 +119,14 @@ class CSVParserTest extends TestCase
 		StreamParser::csv($this->stub)->each(function($book) use ($titles){
 			$this->assertContains($book->get('title'), $titles);
 		});
+
+		// chunk
+
+		StreamParser::csv($this->stub)->chunk(2, function($books) use ($titles){
+			foreach($books as $book) {
+				$this->assertContains($book->get('title'), $titles);
+			}
+		});
 	}
 
 	public function test_also_transforms_element_childs_to_collections_recursively()
@@ -80,6 +134,16 @@ class CSVParserTest extends TestCase
 		StreamParser::csv($this->stub)->each(function($book){
 			if($book->has('comments')){
 				$this->assertInstanceOf(Collection::class, $book->get('comments'));
+			}
+		});
+
+		// chunk
+
+		StreamParser::csv($this->stub)->chunk(2, function($books){
+			foreach($books as $book) {
+				if($book->has('comments')){
+					$this->assertInstanceOf(Collection::class, $book->get('comments'));
+				}
 			}
 		});
 	}
