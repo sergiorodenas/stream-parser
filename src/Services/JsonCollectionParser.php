@@ -47,4 +47,20 @@ class JsonCollectionParser extends Parser
 			throw new IncompleteParseException();
 		}
 	}
+
+	/**
+	 * @param string $filePath
+	 *
+	 * @return resource
+	 * @throws \Exception
+	 */
+	protected function openFile($filePath)
+	{
+		$stream = @fopen($filePath, 'r');
+		if (false === $stream) {
+			throw new \Exception('Unable to open file for read: ' . $filePath);
+		}
+
+		return $stream;
+	}
 }
