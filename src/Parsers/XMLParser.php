@@ -10,6 +10,7 @@ namespace Rodenastyle\StreamParser\Parsers;
 
 
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
 use Tightenco\Collect\Support\Collection;
 use XMLReader;
@@ -37,16 +38,57 @@ class XMLParser implements StreamParserInterface
 	public function each(callable $function)
 	{
 		$this->start();
-		while($this->reader->read()){
-			$this->searchElement($function);
+		try {
+			while($this->reader->read()){
+				if($this->searchElement($function) === false) {
+					break;
+				}
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->stop();
 		}
-		$this->stop();
+	}
+
+	public function chunk($count, callable $function)
+	{
+		if($count <= 0) {
+			return;
+		}
+
+		$this->start();
+		try {
+			$chunk = new Collection();
+
+			while($this->reader->read()){
+				$this->searchElement(function($item) use (&$chunk) {
+					$chunk->push($item);
+				});
+
+				if($chunk->count() >= $count) {
+					$stop = $function($chunk) === false;
+
+					$chunk = new Collection();
+
+					if($stop) {
+						break;
+					}
+				}
+			}
+
+			if($chunk->count() > 0) {
+				$function($chunk);
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->stop();
+		}
 	}
 
 	private function searchElement(callable $function)
 	{
 		if($this->isElement() && ! $this->shouldBeSkipped()){
-			$function($this->extractElement($this->reader->name));
+			return $function($this->extractElement($this->reader->name));
 		}
 	}
 

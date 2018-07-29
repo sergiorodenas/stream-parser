@@ -9,6 +9,7 @@
 namespace Rodenastyle\StreamParser\Parsers;
 
 
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
 use Rodenastyle\StreamParser\Services\JsonCollectionParser as Parser;
 use Rodenastyle\StreamParser\StreamParserInterface;
 use Tightenco\Collect\Support\Collection;
@@ -39,9 +40,45 @@ class JSONParser implements StreamParserInterface
 	public function each(callable $function)
 	{
 		$this->start();
-		$this->reader->parse($this->source, function(array $item) use ($function){
-			$function((new Collection($item))->recursive());
-		});
+		try {
+			$this->reader->parse($this->source, function(array $item) use ($function){
+				if($function((new Collection($item))->recursive()) === false) {
+					throw new StopParseException();
+				}
+			});
+		} catch (StopParseException $e) {
+		}
+	}
+
+	public function chunk($count, callable $function)
+	{
+		if($count <= 0) {
+			return;
+		}
+
+		$this->start();
+		try {
+			$chunk = new Collection();
+
+			$this->reader->parse($this->source, function(array $item) use ($function, &$chunk, &$count){
+				$chunk->push((new Collection($item))->recursive());
+
+				if($chunk->count() >= $count) {
+					$stop = $function($chunk) === false;
+
+					$chunk = new Collection();
+
+					if($stop) {
+						throw new StopParseException();
+					}
+				}
+			});
+
+			if($chunk->count() > 0) {
+				$function($chunk);
+			}
+		} catch (StopParseException $e) {
+		}
 	}
 
 	private function start()

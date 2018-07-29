@@ -11,9 +11,11 @@ namespace Rodenastyle\StreamParser\Test;
 use PHPUnit\Framework\TestCase as BaseTest;
 use Rodenastyle\StreamParser\Test\Contracts\ElementToCollectionTransformation;
 use Rodenastyle\StreamParser\Test\Contracts\MainElementsDetection;
+use Rodenastyle\StreamParser\Test\Contracts\StopParseDetection;
 
 abstract class TestCase extends BaseTest
 implements
 	MainElementsDetection,
-	ElementToCollectionTransformation
+	ElementToCollectionTransformation,
+	StopParseDetection
 {}

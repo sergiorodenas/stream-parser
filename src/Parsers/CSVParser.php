@@ -10,6 +10,7 @@ namespace Rodenastyle\StreamParser\Parsers;
 
 
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
+use Rodenastyle\StreamParser\Exceptions\StopParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
 use Tightenco\Collect\Support\Collection;
 
@@ -41,10 +42,49 @@ class CSVParser implements StreamParserInterface
 	public function each(callable $function)
 	{
 		$this->start();
-		while($this->read()){
-			$function($this->getCurrentLineAsCollection());
+		try {
+			while($this->read()){
+				if($function($this->getCurrentLineAsCollection()) === false) {
+					break;
+				}
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->close();
 		}
-		$this->close();
+	}
+
+	public function chunk($count, callable $function)
+	{
+		if($count <= 0) {
+			return;
+		}
+
+		$this->start();
+		try {
+			$chunk = new Collection();
+
+			while($this->read()){
+				$chunk->push($this->getCurrentLineAsCollection());
+
+				if($chunk->count() >= $count) {
+					$stop = $function($chunk) === false;
+
+					$chunk = new Collection();
+
+					if($stop) {
+						break;
+					}
+				}
+			}
+
+			if($chunk->count() > 0) {
+				$function($chunk);
+			}
+		} catch (StopParseException $e) {
+		} finally {
+			$this->close();
+		}
 	}
 
 	private function start()
