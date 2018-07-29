@@ -19,6 +19,8 @@ class CSVParser implements StreamParserInterface
 
 	public static $delimiters = [",", ";"];
 
+	public static $allowEmptyString = false;
+
 	public function __construct()
 	{
 		Collection::macro('recursive', function () {
@@ -64,8 +66,23 @@ class CSVParser implements StreamParserInterface
 	}
 
 	private function read(): bool{
-		$this->currentLine = (new Collection(fgetcsv($this->reader)))->filter();
-		return $this->currentLine->isNotEmpty();
+		do {
+			$line = fgetcsv($this->reader);
+
+			$this->currentLine = (new Collection($line))->filter(function($value) {
+				if(!self::$allowEmptyString && $value === '') {
+					return false;
+				}
+
+				return $value !== null && $value !== false;
+			});
+
+			if($this->currentLine->isNotEmpty()) {
+				return true;
+			}
+		} while($line !== null && $line !== false);
+
+		return false;
 	}
 
 	private function getCurrentLineAsCollection()
@@ -90,7 +107,7 @@ class CSVParser implements StreamParserInterface
 			});
 			if(is_array($value)){
 				return (new Collection($value))->reject(function($value){
-					return empty($value);
+					return $value === null || $value === false || $value === '';
 				});
 			} else {
 				return $value;
