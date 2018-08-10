@@ -19,20 +19,6 @@ class CSVParser implements StreamParserInterface
 
 	public static $delimiters = [",", ";"];
 
-	public static $allowEmptyString = false;
-
-	public function __construct()
-	{
-		Collection::macro('recursive', function () {
-			return $this->map(function ($value) {
-				if (is_array($value) || is_object($value)) {
-					return (new Collection($value))->recursive();
-				}
-				return $value;
-			});
-		});
-	}
-
 	public function from(String $source): StreamParserInterface
 	{
 		$this->source = $source;
@@ -54,7 +40,7 @@ class CSVParser implements StreamParserInterface
 		$this->reader = fopen($this->source, 'r');
 
 		$this->read();
-		$this->headers = new Collection($this->currentLine);
+		$this->headers = $this->currentLine;
 
 		return $this;
 	}
@@ -66,23 +52,10 @@ class CSVParser implements StreamParserInterface
 	}
 
 	private function read(): bool{
-		do {
-			$line = fgetcsv($this->reader);
+		$this->currentLine = new Collection(fgetcsv($this->reader));
 
-			$this->currentLine = (new Collection($line))->filter(function($value) {
-				if(!self::$allowEmptyString && $value === '') {
-					return false;
-				}
-
-				return $value !== null && $value !== false;
-			});
-
-			if($this->currentLine->isNotEmpty()) {
-				return true;
-			}
-		} while($line !== null && $line !== false);
-
-		return false;
+		//EOF detection
+		return $this->currentLine->first() !== false;
 	}
 
 	private function getCurrentLineAsCollection()
@@ -107,7 +80,7 @@ class CSVParser implements StreamParserInterface
 			});
 			if(is_array($value)){
 				return (new Collection($value))->reject(function($value){
-					return $value === null || $value === false || $value === '';
+					return empty($value);
 				});
 			} else {
 				return $value;
