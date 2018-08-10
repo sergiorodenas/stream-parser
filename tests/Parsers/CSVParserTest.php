@@ -25,7 +25,7 @@ class CSVParserTest extends TestCase
 			$count++;
 		});
 
-		$this->assertEquals(5, $count);
+		$this->assertEquals(6, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
@@ -42,7 +42,8 @@ class CSVParserTest extends TestCase
 			"Anthology of World Literature",
 			"Computer Dictionary",
 			"Cooking on a Budget",
-			"Great Works of Art"
+			"Great Works of Art",
+			"0"
 		];
 
 		$prices = [
@@ -70,38 +71,13 @@ class CSVParserTest extends TestCase
 
 	public function test_allow_empty_string()
 	{
-		CSVParser::$allowEmptyString = true;
+		CSVParser::$skipsEmptyLines = false;
 
 		$count = 0;
-		$countEmptyColumns = 0;
-
-		StreamParser::csv($this->stub)->each(function($book) use (&$count, &$countEmptyColumns){
+		StreamParser::csv($this->stub)->each(function() use (&$count){
 			$count++;
-			$book->each(function($value, $key) use (&$countEmptyColumns) {
-				if($value === '') {
-					$countEmptyColumns++;
-				}
-			});
 		});
 
-		$this->assertEquals(6, $count);
-		$this->assertEquals(4, $countEmptyColumns);
-
-		CSVParser::$allowEmptyString = false;
-
-		$count = 0;
-		$countEmptyColumns = 0;
-
-		StreamParser::csv($this->stub)->each(function($book) use (&$count, &$countEmptyColumns){
-			$count++;
-			$book->each(function($value, $key) use (&$countEmptyColumns) {
-				if($value === '') {
-					$countEmptyColumns++;
-				}
-			});
-		});
-
-		$this->assertEquals(5, $count);
-		$this->assertEquals(0, $countEmptyColumns);
+		$this->assertEquals(8, $count);
 	}
 }
