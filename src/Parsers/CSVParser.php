@@ -18,18 +18,7 @@ class CSVParser implements StreamParserInterface
 	protected $reader, $source, $headers, $currentLine;
 
 	public static $delimiters = [",", ";"];
-
-	public function __construct()
-	{
-		Collection::macro('recursive', function () {
-			return $this->map(function ($value) {
-				if (is_array($value) || is_object($value)) {
-					return (new Collection($value))->recursive();
-				}
-				return $value;
-			});
-		});
-	}
+	public static $skipsEmptyLines = true;
 
 	public function from(String $source): StreamParserInterface
 	{
@@ -42,7 +31,9 @@ class CSVParser implements StreamParserInterface
 	{
 		$this->start();
 		while($this->read()){
-			$function($this->getCurrentLineAsCollection());
+			if($this->currentLineIsValid()){
+				$function($this->getCurrentLineAsCollection());
+			}
 		}
 		$this->close();
 	}
@@ -52,7 +43,7 @@ class CSVParser implements StreamParserInterface
 		$this->reader = fopen($this->source, 'r');
 
 		$this->read();
-		$this->headers = new Collection($this->currentLine);
+		$this->headers = $this->currentLine;
 
 		return $this;
 	}
@@ -64,8 +55,28 @@ class CSVParser implements StreamParserInterface
 	}
 
 	private function read(): bool{
-		$this->currentLine = (new Collection(fgetcsv($this->reader)))->filter();
-		return $this->currentLine->isNotEmpty();
+		$this->currentLine = new Collection(fgetcsv($this->reader));
+
+		//EOF detection
+		return $this->currentLine->first() !== false;
+	}
+
+	private function currentLineIsValid(): bool{
+		if(static::$skipsEmptyLines){
+			return ! $this->currentLineIsEmpty();
+		}
+
+		return true;
+	}
+
+	private function currentLineIsEmpty(){
+		return $this->currentLine->reject(function($value){
+			return $this->isEmptyValue($value);
+		})->isEmpty();
+	}
+
+	private function isEmptyValue($value){
+		return $value === "" || $value === null;
 	}
 
 	private function getCurrentLineAsCollection()
@@ -73,7 +84,11 @@ class CSVParser implements StreamParserInterface
 		$headers = $this->headers;
 		$values = $this->formatCurrentLineValues($this->currentLine);
 
-		return $headers->intersectByKeys($this->currentLine)->combine($values->recursive());
+		return $headers->intersectByKeys($this->currentLine)
+			->combine($values->recursive())
+			->reject(function($value){
+				return $this->isEmptyValue($value);
+			});
 	}
 
 	private function formatCurrentLineValues(Collection $collection){
@@ -90,7 +105,7 @@ class CSVParser implements StreamParserInterface
 			});
 			if(is_array($value)){
 				return (new Collection($value))->reject(function($value){
-					return empty($value);
+					return $this->isEmptyValue($value);
 				});
 			} else {
 				return $value;

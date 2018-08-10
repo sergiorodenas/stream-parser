@@ -12,18 +12,34 @@ namespace Rodenastyle\StreamParser;
 use Rodenastyle\StreamParser\Parsers\CSVParser;
 use Rodenastyle\StreamParser\Parsers\JSONParser;
 use Rodenastyle\StreamParser\Parsers\XMLParser;
+use Rodenastyle\StreamParser\Traits\Facade;
+use Tightenco\Collect\Support\Collection;
 
 class StreamParser
 {
-	public static function xml(String $source){
+	use Facade;
+
+	private function __construct()
+	{
+		Collection::macro('recursive', function () {
+			return $this->map(function ($value) {
+				if (is_array($value) || is_object($value)) {
+					return (new Collection($value))->recursive();
+				}
+				return $value;
+			});
+		});
+	}
+
+	private function xml(String $source){
 		return (new XMLParser())->from($source);
 	}
 
-	public static function json(String $source){
+	private function json(String $source){
 		return (new JSONParser())->from($source);
 	}
 
-	public static function csv(String $source){
+	private function csv(String $source){
 		return (new CSVParser())->from($source);
 	}
 }

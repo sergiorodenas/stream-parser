@@ -10,6 +10,7 @@ namespace Rodenastyle\StreamParser\Test\Parsers;
 
 use PHPUnit\Framework\TestCase;
 use Rodenastyle\StreamParser\StreamParser;
+use Rodenastyle\StreamParser\Parsers\CSVParser;
 use Tightenco\Collect\Support\Collection;
 
 class CSVParserTest extends TestCase
@@ -24,7 +25,7 @@ class CSVParserTest extends TestCase
 			$count++;
 		});
 
-		$this->assertEquals(5, $count);
+		$this->assertEquals(6, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
@@ -41,11 +42,21 @@ class CSVParserTest extends TestCase
 			"Anthology of World Literature",
 			"Computer Dictionary",
 			"Cooking on a Budget",
-			"Great Works of Art"
+			"Great Works of Art",
+			"0"
 		];
 
-		StreamParser::csv($this->stub)->each(function($book) use ($titles){
+		$prices = [
+			'12.95',
+			'24.95',
+			'24.90',
+			'0',
+			'29.95',
+		];
+
+		StreamParser::csv($this->stub)->each(function($book) use ($titles, $prices){
 			$this->assertContains($book->get('title'), $titles);
+			$this->assertContains($book->get('price'), $prices);
 		});
 	}
 
@@ -56,5 +67,17 @@ class CSVParserTest extends TestCase
 				$this->assertInstanceOf(Collection::class, $book->get('comments'));
 			}
 		});
+	}
+
+	public function test_allow_empty_string()
+	{
+		CSVParser::$skipsEmptyLines = false;
+
+		$count = 0;
+		StreamParser::csv($this->stub)->each(function() use (&$count){
+			$count++;
+		});
+
+		$this->assertEquals(8, $count);
 	}
 }
