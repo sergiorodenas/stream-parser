@@ -148,5 +148,31 @@ string(29) "I like other versions better."
 string(39) "Excellent overview of world literature."
 ```
 
+### Chunk parsing
+
+```php
+StreamParser::chunk(StreamParser::csv("https://example.com/books.csv")) // CSV with 5 lines
+->setChunkSize(2)
+->eachChunk(function(){
+    var_dump("Chunk complete");
+})
+->each(function($book){
+    var_dump("Line Complete");
+});
+```
+
+```
+string(13) "Line Complete"
+string(13) "Line Complete"
+string(14) "Chunk complete"
+
+string(13) "Line Complete"
+string(13) "Line Complete"
+string(14) "Chunk complete"
+
+string(13) "Line Complete"
+string(14) "Chunk complete"
+```
+
 ## License
 This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.

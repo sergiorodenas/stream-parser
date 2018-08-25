@@ -9,6 +9,7 @@
 namespace Rodenastyle\StreamParser;
 
 
+use Rodenastyle\StreamParser\Extensions\ChunkExtension;
 use Rodenastyle\StreamParser\Parsers\CSVParser;
 use Rodenastyle\StreamParser\Parsers\JSONParser;
 use Rodenastyle\StreamParser\Parsers\XMLParser;
@@ -41,5 +42,10 @@ class StreamParser
 
 	private function csv(String $source){
 		return (new CSVParser())->from($source);
+	}
+
+    private function chunk(StreamParserInterface $parser)
+    {
+        return new ChunkExtension($parser);
 	}
 }
