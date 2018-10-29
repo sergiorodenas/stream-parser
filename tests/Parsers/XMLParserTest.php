@@ -88,4 +88,13 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 
 		$this->assertEquals($totalComments, $countedComments);
 	}
+
+    public function test_element_is_empty()
+    {
+	    StreamParser::xml($this->stub)->each(function($book) {
+		    if($book->has('reviews')) {
+			    $this->assertEmpty($book->get('reviews'));
+		    }
+	    });
+	}
 }
