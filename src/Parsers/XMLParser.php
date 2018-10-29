@@ -54,7 +54,11 @@ class XMLParser implements StreamParserInterface
 	{
 		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
 
-		while($this->reader->read()){
+        if ($this->isEmptyElement($elementName)) {
+            return $elementCollection;
+        }
+
+        while($this->reader->read()){
 			if($this->isEndElement($elementName)){
 				break;
 			}
@@ -132,4 +136,13 @@ class XMLParser implements StreamParserInterface
 	private function isValue(){
 		return $this->reader->nodeType == XMLReader::TEXT || $this->reader->nodeType === XMLReader::CDATA;
 	}
+
+    private function isEmptyElement(String $elementName = null)
+    {
+        if ($elementName) {
+            return $this->reader->isEmptyElement && $this->reader->name === $elementName;
+        } else {
+            return false;
+        }
+    }
 }
