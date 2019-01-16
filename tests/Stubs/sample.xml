@@ -47,4 +47,9 @@
         <title>Great Works of Art</title>
         <price>29.95</price>
     </book>
+    <book ISBN="11-000000-005">
+        <book>The nested element named like the parent</book>
+        <title>The Greatest Element</title>
+        <price>29.95</price>
+    </book>
 </bookstore>
