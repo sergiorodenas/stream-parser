@@ -99,4 +99,12 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		    }
 	    });
 	}
+
+	public function test_it_parses_child_with_same_parent_name(){
+		StreamParser::xml($this->stub)->each(function($book){
+			if($book->has('book')){
+				$this->assertEquals($book->get('book'), "The nested element named like the parent");
+			}
+		});
+	}
 }
