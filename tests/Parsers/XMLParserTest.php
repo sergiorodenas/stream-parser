@@ -11,10 +11,11 @@ namespace Rodenastyle\StreamParser\Test\Parsers;
 use Rodenastyle\StreamParser\StreamParser;
 use Rodenastyle\StreamParser\Test\Contracts\ElementAttributesManagement;
 use Rodenastyle\StreamParser\Test\Contracts\ElementListManagement;
+use Rodenastyle\StreamParser\Test\Contracts\ElementDepthManagement;
 use Rodenastyle\StreamParser\Test\TestCase;
 use Tightenco\Collect\Support\Collection;
 
-class XMLParserTest extends TestCase implements ElementAttributesManagement, ElementListManagement {
+class XMLParserTest extends TestCase implements ElementAttributesManagement, ElementListManagement, ElementDepthManagement {
 
 	private $stub = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Stubs".DIRECTORY_SEPARATOR."sample.xml";
 
@@ -26,7 +27,7 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			$count++;
 		});
 
-		$this->assertEquals(5, $count);
+		$this->assertEquals(6, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
@@ -43,7 +44,8 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			"Anthology of World Literature",
 			"Computer Dictionary",
 			"Cooking on a Budget",
-			"Great Works of Art"
+			"Great Works of Art",
+			"The Greatest Element"
 		];
 
 		StreamParser::xml($this->stub)->each(function($book) use ($titles){
@@ -67,7 +69,8 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			"11-000000-002",
 			"11-000000-003",
 			"11-000000-004",
-			"10-000000-999"
+			"10-000000-999",
+			"11-000000-005"
 		];
 
 		StreamParser::xml($this->stub)->each(function($book) use ($ISBNList){
@@ -96,5 +99,13 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			    $this->assertEmpty($book->get('reviews'));
 		    }
 	    });
+	}
+
+	public function test_it_parses_child_with_same_parent_name(){
+		StreamParser::xml($this->stub)->each(function($book){
+			if($book->has('book')){
+				$this->assertEquals($book->get('book'), "The nested element named like the parent");
+			}
+		});
 	}
 }
