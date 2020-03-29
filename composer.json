@@ -1,5 +1,5 @@
 {
-  "name": "rodenastyle/stream-parser",
+  "name": "mcpuishor/stream-parser",
   "description": "PHP Multiformat Streaming Parser",
   "keywords": ["php7", "laravel", "stream", "parser", "pull", "xml", "csv", "json"],
   "license": "MIT",
@@ -16,7 +16,7 @@
     "php": "^7.1.3",
     "ext-xmlreader": "*",
     "maxakawizard/json-collection-parser": "^1.1",
-    "tightenco/collect": "^5.7"
+    "tightenco/collect": "^6.18"
   },
 
   "require-dev": {
