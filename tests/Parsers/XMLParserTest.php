@@ -92,20 +92,26 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 		$this->assertEquals($totalComments, $countedComments);
 	}
 
-    public function test_element_is_empty()
-    {
-	    StreamParser::xml($this->stub)->each(function($book) {
-		    if($book->has('reviews')) {
-			    $this->assertEmpty($book->get('reviews'));
-		    }
-	    });
+	public function test_element_is_empty()
+	{
+		StreamParser::xml($this->stub)->each(function($book) {
+			if($book->has('reviews')) {
+				$this->assertEmpty($book->get('reviews'));
+			}
+		});
 	}
 
-	public function test_it_parses_child_with_same_parent_name(){
+	public function test_it_parses_child_with_same_parent_name() {
 		StreamParser::xml($this->stub)->each(function($book){
 			if($book->has('book')){
 				$this->assertEquals($book->get('book'), "The nested element named like the parent");
 			}
+		});
+	}
+
+	public function test_pass_key_element_in_callback() {
+		StreamParser::xml($this->stub)->each(function($book, $key){
+			$this->assertEquals($key, 'book');
 		});
 	}
 }

@@ -46,7 +46,7 @@ class XMLParser implements StreamParserInterface
 	private function searchElement(callable $function)
 	{
 		if($this->isElement() && ! $this->shouldBeSkipped()){
-			$function($this->extractElement($this->reader->name, false, $this->reader->depth));
+			$function($this->extractElement($this->reader->name, false, $this->reader->depth), $this->reader->name);
 		}
 	}
 
@@ -137,11 +137,11 @@ class XMLParser implements StreamParserInterface
 		return $this->reader->nodeType == XMLReader::TEXT || $this->reader->nodeType === XMLReader::CDATA;
 	}
 
-    private function isEmptyElement(String $elementName = null){
-	    if($elementName) {
-		    return $this->reader->isEmptyElement && $this->reader->name === $elementName;
-	    } else {
-		    return false;
-	    }
-    }
+	private function isEmptyElement(String $elementName = null){
+		if($elementName) {
+			return $this->reader->isEmptyElement && $this->reader->name === $elementName;
+		} else {
+			return false;
+		}
+	}
 }
