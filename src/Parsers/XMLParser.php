@@ -52,9 +52,11 @@ class XMLParser implements StreamParserInterface
 
 	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth)
 	{
+		$emptyElement = $this->isEmptyElement($elementName);
+		
 		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
 
-		if($this->isEmptyElement($elementName)) {
+		if($emptyElement) {
 			return $elementCollection;
 		}
 
