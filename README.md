@@ -1,18 +1,11 @@
 # ⚡ PHP7 / Laravel Multi-format Streaming Parser
 
-[![Build Status](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/build-status/master)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/rodenastyle/stream-parser.svg?style=flat-square)](https://packagist.org/packages/rodenastyle/stream-parser)
-[![Quality Score](https://img.shields.io/scrutinizer/g/rodenastyle/stream-parser.svg?style=flat-square)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Rodenastyle/stream-parser/?branch=master)
-[![License](https://img.shields.io/packagist/l/Rodenastyle/stream-parser.svg)](https://packagist.org/packages/Rodenastyle/stream-parser)
-
 > When it comes to parsing XML/CSV/JSON/... documents, there are 2 approaches to consider:
 >
 > **DOM loading**: loads all the document, making it easy to navigate and parse, and as such provides maximum flexibility for developers.
 >
 > **Streaming**: implies iterating through the document, acts like a cursor and stops at each element in its way, thus avoiding memory overkill.
 >
-> [https://www.linkedin.com/pulse/processing-xml-documents-dom-vs-streaming-marius-ilina/](https://www.linkedin.com/pulse/processing-xml-documents-dom-vs-streaming-marius-ilina)
 
 Thus, when it comes to big files, callbacks will be executed meanwhile file is downloading and will be much more efficient as far as memory is concerned.
 
