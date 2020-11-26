@@ -1,13 +1,13 @@
 {
-  "name": "rodenastyle/stream-parser",
+  "name": "denis-kisel/stream-parser",
   "description": "PHP Multiformat Streaming Parser",
   "keywords": ["php7", "laravel", "stream", "parser", "pull", "xml", "csv", "json"],
   "license": "MIT",
 
   "authors": [
     {
-      "name": "Sergio Ródenas",
-      "homepage": "https://rodenastyle.com",
+      "name": "Sergio Ródenas, Denis Kisel",
+      "homepage": "https://digital-elephant.com",
       "role": "developer"
     }
   ],
