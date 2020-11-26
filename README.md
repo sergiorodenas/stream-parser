@@ -9,9 +9,11 @@
 
 Thus, when it comes to big files, callbacks will be executed meanwhile file is downloading and will be much more efficient as far as memory is concerned.
 
+Forked from [rodenastyle](https://github.com/sergiorodenas/stream-parser)
+
 ## Installation
 ```
-composer require rodenastyle/stream-parser
+composer require denis-kisel/stream-parser
 ```
 
 ## Recommended usage
