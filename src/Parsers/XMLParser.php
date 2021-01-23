@@ -50,7 +50,7 @@ class XMLParser implements StreamParserInterface
 		}
 	}
 
-	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth, ?string $foundInEl = null)
+	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth, string $foundInEl = null)
 	{
 		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
 
