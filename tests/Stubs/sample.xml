@@ -52,4 +52,13 @@
         <title>The Greatest Element</title>
         <price>29.95</price>
     </book>
+    <book ISBN="11-000000-006">
+        <book>The nested element named like the parent</book>
+        <title>The Greatest Element</title>
+        <price>29.95</price>
+        <author>
+            <name>Test</name>
+            <year>2020</year>
+        </author>
+    </book>
 </bookstore>

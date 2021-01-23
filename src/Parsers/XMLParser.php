@@ -50,11 +50,13 @@ class XMLParser implements StreamParserInterface
 		}
 	}
 
-	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth)
+	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth, string $foundInEl = null)
 	{
+		$emptyElement = $this->isEmptyElement($elementName);
+		
 		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
 
-		if($this->isEmptyElement($elementName)) {
+		if($emptyElement) {
 			return $elementCollection;
 		}
 
@@ -64,6 +66,10 @@ class XMLParser implements StreamParserInterface
 			}
 			if($this->isValue()) {
 				if($elementCollection->isEmpty()) {
+				    if (!is_null($foundInEl)) {
+                        return $elementCollection->put($elementName, trim($this->reader->value));
+                    }
+
 					return trim($this->reader->value);
 				} else {
 					return $elementCollection->put($elementName, trim($this->reader->value));
@@ -72,7 +78,7 @@ class XMLParser implements StreamParserInterface
 			if($this->isElement()) {
 				if($couldBeAnElementsList) {
 					$foundElementName = $this->reader->name;
-					$elementCollection->push(new Collection($this->extractElement($foundElementName, false, $this->reader->depth)));
+					$elementCollection->push(new Collection($this->extractElement($foundElementName, false, $this->reader->depth, $elementName)));
 				} else {
 					$foundElementName = $this->reader->name;
 					$elementCollection->put($foundElementName, $this->extractElement($foundElementName, true, $this->reader->depth));

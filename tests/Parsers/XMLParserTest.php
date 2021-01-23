@@ -27,7 +27,7 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			$count++;
 		});
 
-		$this->assertEquals(6, $count);
+		$this->assertEquals(7, $count);
 	}
 
 	public function test_transforms_elements_to_collections()
@@ -70,7 +70,8 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			"11-000000-003",
 			"11-000000-004",
 			"10-000000-999",
-			"11-000000-005"
+			"11-000000-005",
+            "11-000000-006"
 		];
 
 		StreamParser::xml($this->stub)->each(function($book) use ($ISBNList){
@@ -114,4 +115,14 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 			$this->assertEquals($key, 'book');
 		});
 	}
+	
+	public function test_element_name_in_sub_element()
+    {
+        StreamParser::xml($this->stub)->each(function($book) {
+           if ($book->has('author')) {
+                $author = $book->get('author')[0];
+                $this->assertEquals($author->get('name'), "Test");
+            }
+        });
+    }
 }
