@@ -18,13 +18,13 @@ class TSVParserTest extends TestCase
 	private $stub = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Stubs".DIRECTORY_SEPARATOR."sample.tsv";
 
 	protected function setUp() {
-		CSVParser::$delimiter = "\t";
+		CSVParser::$fieldDelimiter = "\t";
 		CSVParser::$skipsEmptyLines = true;
 	}
 
 	protected function tearDown()
 	{
-		CSVParser::$delimiter = ",";
+		CSVParser::$fieldDelimiter = ",";
 	}
 
 	public function test_detects_main_elements_automatically()

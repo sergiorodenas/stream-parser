@@ -18,7 +18,7 @@ class CSVParser implements StreamParserInterface
 	protected $reader, $source, $headers, $currentLine;
 
 	public static $delimiters = [",", ";"];
-	public static $delimiter = ",";
+	public static $fieldDelimiter = ",";
 	public static $skipsEmptyLines = true;
 
 	public function from(String $source): StreamParserInterface
@@ -56,7 +56,7 @@ class CSVParser implements StreamParserInterface
 	}
 
 	private function read(): bool{
-		$this->currentLine = new Collection(fgetcsv($this->reader, null, static::$delimiter));
+		$this->currentLine = new Collection(fgetcsv($this->reader, null, static::$fieldDelimiter));
 
 		//EOF detection
 		return $this->currentLine->first() !== false;
