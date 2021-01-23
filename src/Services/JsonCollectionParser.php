@@ -23,7 +23,7 @@ class JsonCollectionParser extends Parser
 	 *
 	 * @throws \Exception
 	 */
-	public function parse($filePath, $itemCallback, $assoc = true): void
+	public function parse($filePath, $itemCallback, bool $assoc = true): void
 	{
 		$this->checkCallback($itemCallback);
 
