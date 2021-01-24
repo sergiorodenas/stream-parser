@@ -124,5 +124,24 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
                 $this->assertEquals($author->get('name'), "Test");
             }
         });
+	}
+	
+	public function test_separate_parameters_list()
+    {
+		$ISBNList = [
+			"10-000000-001",
+			"11-000000-002",
+			"11-000000-003",
+			"11-000000-004",
+			"10-000000-999",
+			"11-000000-005",
+            "11-000000-006"
+		];
+
+        StreamParser::xml($this->stub)->withSeparatedParametersList()->each(function($book) use ($ISBNList) {
+			if ($book->has('__params')) {
+                $this->assertContains($book->get('__params')->get('ISBN'), $ISBNList);
+            }
+        });
     }
 }

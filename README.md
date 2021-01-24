@@ -97,6 +97,7 @@ array(2) {
   }
 }
 ```
+Additionally, you could make use of ```->withSeparatedParametersList()``` to get the params of each element separated on the ```__params``` property.
 
 ### JSON
 ```json

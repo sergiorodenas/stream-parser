@@ -20,10 +20,17 @@ class XMLParser implements StreamParserInterface
 	protected $reader,$source;
 
 	protected $skipFirstElement = true;
+	protected $separateParameters = false;
 
 	public function from(String $source): StreamParserInterface
 	{
 		$this->source = $source;
+
+		return $this;
+	}
+
+	public function withSeparatedParametersList(){
+		$this->separateParameters = true;
 
 		return $this;
 	}
@@ -54,7 +61,14 @@ class XMLParser implements StreamParserInterface
 	{
 		$emptyElement = $this->isEmptyElement($elementName);
 		
-		$elementCollection = (new Collection())->merge($this->getCurrentElementAttributes());
+		$elementCollection = new Collection();
+
+		$elementParameters = $this->getCurrentElementAttributes();
+		if($this->separateParameters){
+			$elementCollection->put('__params', $elementParameters);
+		} else {
+			$elementCollection = $elementCollection->merge($elementParameters);
+		}
 
 		if($emptyElement) {
 			return $elementCollection;
