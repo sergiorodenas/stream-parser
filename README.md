@@ -98,6 +98,7 @@ array(2) {
 }
 ```
 Additionally, you could make use of ```->withSeparatedParametersList()``` to get the params of each element separated on the ```__params``` property.
+Also, ```->withoutSkippingFirstElement()``` could be of help to parse the very first item (usually the element that contains the elements).
 
 ### JSON
 ```json
