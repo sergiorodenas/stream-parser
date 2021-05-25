@@ -81,10 +81,10 @@ class XMLParser implements StreamParserInterface
 			if($this->isValue()) {
 				if($elementCollection->isEmpty()) {
 				    if (!is_null($foundInEl)) {
-                        return $elementCollection->put($elementName, trim($this->reader->value));
-                    }
+                        		return $elementCollection->put($elementName, trim($this->reader->value));
+                   		    }
 
-					return trim($this->reader->value);
+				    return trim($this->reader->value);
 				} else {
 					return $elementCollection->put($elementName, trim($this->reader->value));
 				}
