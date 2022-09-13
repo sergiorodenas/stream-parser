@@ -20,7 +20,10 @@ class XMLParser implements StreamParserInterface
 	protected $reader,$source;
 
 	protected $skipFirstElement = true;
-	protected $separateParameters = false;
+
+    protected $separateParameters = false;
+
+    protected $extractElementName = false;
 
 	public function from(String $source): StreamParserInterface
 	{
@@ -34,6 +37,15 @@ class XMLParser implements StreamParserInterface
 
 		return $this;
 	}
+
+    /**
+     * Extract and put element name in __name
+     */
+    public function withElementName(){
+        $this->extractElementName = true;
+
+        return $this;
+    }
 
 	public function withoutSkippingFirstElement(){
 		$this->skipFirstElement = false;
@@ -69,6 +81,10 @@ class XMLParser implements StreamParserInterface
 		} else {
 			$elementCollection = $elementCollection->merge($elementParameters);
 		}
+
+        if($this->extractElementName && $parentDepth === 1){
+            $elementCollection->put('__name', $elementName);
+        }
 
 		if($emptyElement) {
 			return $elementCollection;

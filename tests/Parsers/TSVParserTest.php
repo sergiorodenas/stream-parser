@@ -17,12 +17,12 @@ class TSVParserTest extends TestCase
 {
 	private $stub = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Stubs".DIRECTORY_SEPARATOR."sample.tsv";
 
-	protected function setUp() {
+	protected function setUp(): void {
 		CSVParser::$fieldDelimiter = "\t";
 		CSVParser::$skipsEmptyLines = true;
 	}
 
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		CSVParser::$fieldDelimiter = ",";
 	}

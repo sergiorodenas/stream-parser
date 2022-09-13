@@ -10,8 +10,8 @@ namespace Rodenastyle\StreamParser\Test\Parsers;
 
 use Rodenastyle\StreamParser\StreamParser;
 use Rodenastyle\StreamParser\Test\Contracts\ElementAttributesManagement;
-use Rodenastyle\StreamParser\Test\Contracts\ElementListManagement;
 use Rodenastyle\StreamParser\Test\Contracts\ElementDepthManagement;
+use Rodenastyle\StreamParser\Test\Contracts\ElementListManagement;
 use Rodenastyle\StreamParser\Test\TestCase;
 use Tightenco\Collect\Support\Collection;
 
@@ -128,19 +128,35 @@ class XMLParserTest extends TestCase implements ElementAttributesManagement, Ele
 	
 	public function test_separate_parameters_list()
     {
-		$ISBNList = [
-			"10-000000-001",
-			"11-000000-002",
-			"11-000000-003",
-			"11-000000-004",
-			"10-000000-999",
-			"11-000000-005",
+        $ISBNList = [
+            "10-000000-001",
+            "11-000000-002",
+            "11-000000-003",
+            "11-000000-004",
+            "10-000000-999",
+            "11-000000-005",
             "11-000000-006"
-		];
+        ];
 
-        StreamParser::xml($this->stub)->withSeparatedParametersList()->each(function($book) use ($ISBNList) {
-			if ($book->has('__params')) {
+        StreamParser::xml($this->stub)->withSeparatedParametersList()->each(function ($book) use ($ISBNList) {
+            if ($book->has('__params')) {
                 $this->assertContains($book->get('__params')->get('ISBN'), $ISBNList);
+            }
+        });
+    }
+
+    public function test_element_name()
+    {
+        StreamParser::xml($this->stub)->withElementName()->each(function ($book) {
+
+            /** @var Collection $book */
+            self::assertTrue($book->has('__name'));
+            self::assertEquals('book', $book->get('__name'));
+
+
+            $comments = $book->get('comments');
+            if($comments){
+                self::assertFalse($comments->has('__name'));
             }
         });
     }
