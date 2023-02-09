@@ -8,12 +8,12 @@
 
 namespace Rodenastyle\StreamParser\Test\Parsers;
 
+use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\StreamParser;
 use Rodenastyle\StreamParser\Test\Contracts\ElementAttributesManagement;
 use Rodenastyle\StreamParser\Test\Contracts\ElementListManagement;
 use Rodenastyle\StreamParser\Test\Contracts\ElementDepthManagement;
 use Rodenastyle\StreamParser\Test\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class XMLParserTest extends TestCase implements ElementAttributesManagement, ElementListManagement, ElementDepthManagement {
 
