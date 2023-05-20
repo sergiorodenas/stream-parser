@@ -26,7 +26,7 @@ Delegate as possible the callback execution so it doesn't blocks the document re
 
 (Laravel Queue based example)
 ```php
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 StreamParser::xml("https://example.com/users.xml")->each(function(Collection $user){
     dispatch(new App\Jobs\SendEmail($user));
@@ -54,7 +54,7 @@ StreamParser::xml("https://example.com/users.xml")->each(function(Collection $us
 </bookstore>
 ```
 ```php
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 StreamParser::xml("https://example.com/books.xml")->each(function(Collection $book){
     var_dump($book);
@@ -122,7 +122,7 @@ Also, ```->withoutSkippingFirstElement()``` could be of help to parse the very f
 ]
 ```
 ```php
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 StreamParser::json("https://example.com/books.json")->each(function(Collection $book){
     var_dump($book->get('comments')->count());
@@ -139,7 +139,7 @@ The Iliad and The Odyssey,12.95,"Best translation I've read.,I like other versio
 Anthology of World Literature,24.95,"Needs more modern literature.,Excellent overview of world literature."
 ```
 ```php
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 StreamParser::csv("https://example.com/books.csv")->each(function(Collection $book){
     var_dump($book->get('comments')->last());
