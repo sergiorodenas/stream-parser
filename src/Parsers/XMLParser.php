@@ -9,9 +9,9 @@
 namespace Rodenastyle\StreamParser\Parsers;
 
 
+use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
-use Tightenco\Collect\Support\Collection;
 use XMLReader;
 
 
@@ -57,7 +57,7 @@ class XMLParser implements StreamParserInterface
 		}
 	}
 
-	private function extractElement(String $elementName, $couldBeAnElementsList = false, int $parentDepth, string $foundInEl = null)
+	private function extractElement(String $elementName, bool $couldBeAnElementsList, int $parentDepth, string $foundInEl = null)
 	{
 		$emptyElement = $this->isEmptyElement($elementName);
 		

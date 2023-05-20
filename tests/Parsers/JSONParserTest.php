@@ -8,9 +8,9 @@
 
 namespace Rodenastyle\StreamParser\Test\Parsers;
 
+use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\Test\TestCase;
 use Rodenastyle\StreamParser\StreamParser;
-use Tightenco\Collect\Support\Collection;
 
 class JSONParserTest extends TestCase
 {

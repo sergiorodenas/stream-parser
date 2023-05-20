@@ -9,11 +9,11 @@
 namespace Rodenastyle\StreamParser;
 
 
+use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\Parsers\CSVParser;
 use Rodenastyle\StreamParser\Parsers\JSONParser;
 use Rodenastyle\StreamParser\Parsers\XMLParser;
 use Rodenastyle\StreamParser\Traits\Facade;
-use Tightenco\Collect\Support\Collection;
 
 class StreamParser
 {

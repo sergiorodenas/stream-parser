@@ -9,9 +9,9 @@
 namespace Rodenastyle\StreamParser\Parsers;
 
 
+use Illuminate\Support\Collection;
 use Rodenastyle\StreamParser\Exceptions\IncompleteParseException;
 use Rodenastyle\StreamParser\StreamParserInterface;
-use Tightenco\Collect\Support\Collection;
 
 class CSVParser implements StreamParserInterface
 {
@@ -100,7 +100,7 @@ class CSVParser implements StreamParserInterface
 	private function explodeCollectionValues(Collection $collection){
 		$collection->transform(function($value){
 			(new Collection(static::$delimiters))->each(function($delimiter) use (&$value){
-				if( ! is_array($value) && strpos($value, $delimiter) !== false){
+				if( ! is_array($value) && $value !== null && strpos($value, $delimiter) !== false){
 					$value = explode($delimiter, $value);
 				}
 			});
