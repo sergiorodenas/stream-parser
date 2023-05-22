@@ -60,7 +60,7 @@ class XMLParser implements StreamParserInterface
 	private function extractElement(String $elementName, bool $couldBeAnElementsList, int $parentDepth, string $foundInEl = null)
 	{
 		$emptyElement = $this->isEmptyElement($elementName);
-		
+
 		$elementCollection = new Collection();
 
 		$elementParameters = $this->getCurrentElementAttributes();
@@ -94,8 +94,19 @@ class XMLParser implements StreamParserInterface
 					$foundElementName = $this->reader->name;
 					$elementCollection->push(new Collection($this->extractElement($foundElementName, false, $this->reader->depth, $elementName)));
 				} else {
-					$foundElementName = $this->reader->name;
-					$elementCollection->put($foundElementName, $this->extractElement($foundElementName, true, $this->reader->depth));
+                    $foundElementName = $this->reader->name;
+                    $value = $this->extractElement($foundElementName, true, $this->reader->depth);
+
+                    if ($elementCollection->has($foundElementName)) {
+                        $existantValue = $elementCollection->get($foundElementName);
+                        if (is_string($existantValue)) {
+                            $existantValue = collect([$existantValue]);
+                            $elementCollection->put($foundElementName, $existantValue);
+                        }
+                        $elementCollection->put($foundElementName, $existantValue->merge([$value]));
+                    } else {
+                        $elementCollection->put($foundElementName, $value);
+                    }
 				}
 			}
 		}
