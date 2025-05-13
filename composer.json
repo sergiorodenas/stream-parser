@@ -15,7 +15,7 @@
   "require": {
     "php": ">=7.1|^8.0",
     "ext-xmlreader": "*",
-    "illuminate/collections": "^8.0|^9.0|^10.0|^11.0",
+    "illuminate/collections": "^8.0|^9.0|^10.0|^11.0|^12.0",
     "maxakawizard/json-collection-parser": "^1.1"
   },
 
